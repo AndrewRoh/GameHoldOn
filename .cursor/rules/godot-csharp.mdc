@@ -1,0 +1,12 @@
+---
+description: Godot 4.x C# (.NET) 관례
+globs: src/**/*.cs
+alwaysApply: false
+---
+
+# C# (Godot .NET)
+
+- **Godot API**: `docs/engine-reference/godot/` 와 공식 C# 바인딩 문서를 함께 본다. `Call`/`Connect` 등은 스네이크 케이스 API 이름이 필요할 수 있다 — 가능하면 `MethodName`, `PropertyName`, `SignalName` 정적 헬퍼를 사용한다.
+- **네이밍**: 공개 멤버는 PascalCase, private 필드는 `_camelCase`. 스크립트 **클래스 이름 = 파일 이름** (`Main.cs` → `partial class Main`).
+- **빌드**: 에디터에서 새 `[Export]` 등을 추가한 뒤에는 Godot **빌드** 버튼 또는 `dotnet build`로 어셈블리를 갱신한다.
+- **비동기**: 게임 로직에서 `async`/`await` 사용 시 씬 트리 수명·스레드 안전을 고려한다.

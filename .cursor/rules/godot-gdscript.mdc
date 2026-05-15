@@ -1,5 +1,5 @@
 ---
-description: Godot 4.x GDScript 관례 (typed, scenes)
+description: Godot 4.x GDScript (선택·도구용)
 globs: src/**/*.gd
 alwaysApply: false
 ---

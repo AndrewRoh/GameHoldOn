@@ -5,8 +5,8 @@
 
 ## Engine & Language
 
-- **Engine**: Godot **4.6** (pinned in `docs/engine-reference/godot/VERSION.md`; project root `src/`)
-- **Language**: GDScript
+- **Engine**: Godot **4.6.x** (.NET editor build recommended)
+- **Language**: **C#** (primary game code via Godot .NET / `Godot.NET.Sdk`); GDScript optional
 - **Rendering**: Forward+ (default in `src/project.godot` features)
 - **Physics**: Jolt is default in Godot 4.6 — consult engine docs when authoring physics-heavy systems
 
@@ -65,8 +65,8 @@
 <!-- Read by /code-review, /architecture-decision, /architecture-review, and team skills -->
 <!-- to know which specialist to spawn for engine-specific validation. -->
 
-- **Primary**: godot-specialist (engine API, project structure)
-- **Language/Code Specialist**: godot-gdscript-specialist (`.gd`)
+- **Primary**: godot-specialist
+- **Language/Code Specialist**: **godot-csharp-specialist** (`.cs`); **godot-gdscript-specialist** (`.gd` when used)
 - **Shader Specialist**: godot-shader-specialist (`.gdshader`, materials)
 - **UI Specialist**: ui-programmer + godot-specialist for Control scenes
 - **Additional Specialists**: godot-gdextension-specialist (native/GDExtension only)
@@ -79,6 +79,7 @@
 
 | File Extension / Type | Specialist to Spawn |
 |-----------------------|---------------------|
+| `.cs` | godot-csharp-specialist |
 | `.gd` | godot-gdscript-specialist |
 | `.gdshader`, `.shader` | godot-shader-specialist |
 | `.tscn` with `Control`/`CanvasItem` UI | ui-programmer |

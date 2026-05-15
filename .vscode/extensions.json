@@ -1,3 +1,7 @@
 {
-  "recommendations": ["geequlim.godot-tools"]
+  "recommendations": [
+    "geequlim.godot-tools",
+    "ms-dotnettools.csharp",
+    "ms-dotnettools.csdevkit"
+  ]
 }

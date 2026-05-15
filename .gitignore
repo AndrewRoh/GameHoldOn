@@ -46,6 +46,8 @@ export_presets.cfg
 # *.import
 
 # === Engine: Unity ===
+# Note: *.csproj / *.sln are not ignored globally — Godot .NET under src/ is committed.
+# Add explicit Unity folder rules here if you introduce a Unity tree.
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -53,9 +55,7 @@ export_presets.cfg
 [Bb]uilds/
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
-*.csproj
 *.unityproj
-*.sln
 *.suo
 *.tmp
 *.user

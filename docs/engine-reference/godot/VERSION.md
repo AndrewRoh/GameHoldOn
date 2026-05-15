@@ -3,6 +3,7 @@
 | Field | Value |
 |-------|-------|
 | **Engine Version** | Godot 4.6 |
+| **Scripting** | **C# / .NET 8** (Godot .NET editor + `Godot.NET.Sdk`); GDScript optional |
 | **Release Date** | January 2026 |
 | **Project Pinned** | 2026-02-12 |
 | **Last Docs Verified** | 2026-02-12 |

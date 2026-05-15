@@ -5,10 +5,10 @@ Each agent owns a specific domain, enforcing separation of concerns and quality.
 
 ## Technology Stack
 
-- **Engine**: Godot **4.6** (project in `src/` — `src/project.godot`)
-- **Language**: GDScript
+- **Engine**: Godot **4.6.x** (.NET) — project in `src/` (`src/project.godot`, `GameHoldOn.csproj`)
+- **Language**: **C#** (Godot .NET); GDScript optional for small/tooling scripts
 - **Version Control**: Git with trunk-based development
-- **Build System**: Godot editor export + `export_presets.cfg` (local; gitignored by default)
+- **Build System**: `dotnet build` on `src/GameHoldOn.csproj` + Godot editor export (`export_presets.cfg` local; gitignored by default)
 - **Asset Pipeline**: Godot `res://` under `src/`; binary art in `assets/` (see `.gitignore` for LFS notes)
 
 > **Cursor**: Day-to-day development uses Cursor; see root `AGENTS.md` and `.cursor/rules/`.
