@@ -5,11 +5,13 @@ Each agent owns a specific domain, enforcing separation of concerns and quality.
 
 ## Technology Stack
 
-- **Engine**: [CHOOSE: Godot 4 / Unity / Unreal Engine 5]
-- **Language**: [CHOOSE: GDScript / C# / C++ / Blueprint]
+- **Engine**: Godot **4.6** (project in `src/` — `src/project.godot`)
+- **Language**: GDScript
 - **Version Control**: Git with trunk-based development
-- **Build System**: [SPECIFY after choosing engine]
-- **Asset Pipeline**: [SPECIFY after choosing engine]
+- **Build System**: Godot editor export + `export_presets.cfg` (local; gitignored by default)
+- **Asset Pipeline**: Godot `res://` under `src/`; binary art in `assets/` (see `.gitignore` for LFS notes)
+
+> **Cursor**: Day-to-day development uses Cursor; see root `AGENTS.md` and `.cursor/rules/`.
 
 > **Note**: Engine-specialist agents exist for Godot, Unity, and Unreal with
 > dedicated sub-specialists. Use the set matching your engine.

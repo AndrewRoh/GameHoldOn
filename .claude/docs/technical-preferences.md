@@ -5,10 +5,10 @@
 
 ## Engine & Language
 
-- **Engine**: [TO BE CONFIGURED — run /setup-engine]
-- **Language**: [TO BE CONFIGURED]
-- **Rendering**: [TO BE CONFIGURED]
-- **Physics**: [TO BE CONFIGURED]
+- **Engine**: Godot **4.6** (pinned in `docs/engine-reference/godot/VERSION.md`; project root `src/`)
+- **Language**: GDScript
+- **Rendering**: Forward+ (default in `src/project.godot` features)
+- **Physics**: Jolt is default in Godot 4.6 — consult engine docs when authoring physics-heavy systems
 
 ## Input & Platform
 
@@ -65,12 +65,12 @@
 <!-- Read by /code-review, /architecture-decision, /architecture-review, and team skills -->
 <!-- to know which specialist to spawn for engine-specific validation. -->
 
-- **Primary**: [TO BE CONFIGURED — run /setup-engine]
-- **Language/Code Specialist**: [TO BE CONFIGURED]
-- **Shader Specialist**: [TO BE CONFIGURED]
-- **UI Specialist**: [TO BE CONFIGURED]
-- **Additional Specialists**: [TO BE CONFIGURED]
-- **Routing Notes**: [TO BE CONFIGURED]
+- **Primary**: godot-specialist (engine API, project structure)
+- **Language/Code Specialist**: godot-gdscript-specialist (`.gd`)
+- **Shader Specialist**: godot-shader-specialist (`.gdshader`, materials)
+- **UI Specialist**: ui-programmer + godot-specialist for Control scenes
+- **Additional Specialists**: godot-gdextension-specialist (native/GDExtension only)
+- **Routing Notes**: Cursor sessions use this table as a human-readable routing guide; no automatic agent spawn.
 
 ### File Extension Routing
 
@@ -79,9 +79,9 @@
 
 | File Extension / Type | Specialist to Spawn |
 |-----------------------|---------------------|
-| Game code (primary language) | [TO BE CONFIGURED] |
-| Shader / material files | [TO BE CONFIGURED] |
-| UI / screen files | [TO BE CONFIGURED] |
-| Scene / prefab / level files | [TO BE CONFIGURED] |
-| Native extension / plugin files | [TO BE CONFIGURED] |
-| General architecture review | Primary |
+| `.gd` | godot-gdscript-specialist |
+| `.gdshader`, `.shader` | godot-shader-specialist |
+| `.tscn` with `Control`/`CanvasItem` UI | ui-programmer |
+| `.tscn` (gameplay / world) | godot-specialist |
+| GDExtension / C++ module | godot-gdextension-specialist |
+| General architecture review | godot-specialist |

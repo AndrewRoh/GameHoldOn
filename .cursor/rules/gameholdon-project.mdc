@@ -1,0 +1,12 @@
+---
+description: GameHoldOn 프로젝트 맥락 — 엔진, 문서, 작업 방식
+alwaysApply: true
+---
+
+# GameHoldOn (Cursor)
+
+- **엔진**: Godot **4.6** (문서 고정). 프로젝트 루트는 `src/` (`project.godot` 위치).
+- **언어**: GDScript. API는 학습 데이터보다 최신일 수 있으므로 변경 전 **`docs/engine-reference/godot/`** 와 `docs/engine-reference/godot/VERSION.md` 를 확인한다.
+- **코드·설계 규칙**: `.claude/docs/coding-standards.md`, `docs/COLLABORATIVE-DESIGN-PRINCIPLE.md` (큰 변경은 사용자 확인).
+- **Claude Code 미사용**: 저장소의 `.claude/` 스킬·슬래시 커맨드는 참고만 하고, Cursor에서는 사용자 지시와 이 규칙을 기준으로 구현한다.
+- **에셋·빌드**: `assets/`, `design/`, `docs/`, `tests/` 는 템플릿 구조를 따른다. Godot 내부 캐시 `.godot/` 는 gitignore 대상이다.

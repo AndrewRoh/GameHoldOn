@@ -1,0 +1,12 @@
+---
+description: Godot 4.x GDScript 관례 (typed, scenes)
+globs: src/**/*.gd
+alwaysApply: false
+---
+
+# GDScript (Godot 4.6)
+
+- **정적 타입**: 가능한 한 `-> void` 등 반환 타입과 변수 타입을 명시한다.
+- **API 확인**: `docs/engine-reference/godot/` 에 없는 API는 공식 문서를 기준으로 하고, 4.4+ 변경은 `breaking-changes.md` 를 참고한다.
+- **장면·노드**: `class_name` 과 시그널 이름은 프로젝트 전체에서 일관되게 짓는다. 매직 넘버는 튜닝 가능한 데이터로 분리한다.
+- **테스트**: 게임플레이 로직은 `tests/` 쪽 자동화와 연계할 수 있게 의존성 주입을 선호한다.

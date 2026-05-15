@@ -1,5 +1,7 @@
 # Source Directory
 
+This directory is the **Godot project root** (`src/project.godot`, `res://`).
+
 When writing or editing game code in this directory, follow these standards.
 
 ## Engine Version Warning
