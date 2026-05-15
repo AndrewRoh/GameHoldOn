@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Generate flat placeholder PNGs for GameHoldOn combat visuals (MVP)."""
+"""Generate flat placeholder PNGs for GameHoldOn combat visuals (MVP).
+
+Warning: Overwrites existing files. After PixelLab download, use
+tools/download_pixellab_sprites.ps1 instead, or delete sprites before running.
+"""
 
 from pathlib import Path
 

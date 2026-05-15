@@ -49,6 +49,9 @@ public static class ArtPaths
         _ => EnemyHr
     };
 
-    /// <summary>Feet-aligned pivot for 64×64 sprites.</summary>
-    public static readonly Vector2 CharacterFeetOffset = new(32f, 56f);
+    /// <summary>Feet-aligned pivot for PixelLab 68×68 canvas (~48px character).</summary>
+    public static readonly Vector2 CharacterFeetOffset = new(34f, 60f);
+
+    /// <summary>Center pivot for 32×32 projectile canvas.</summary>
+    public static readonly Vector2 ProjectileCenterOffset = new(16f, 16f);
 }

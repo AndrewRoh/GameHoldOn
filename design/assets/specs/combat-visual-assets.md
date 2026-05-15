@@ -3,7 +3,7 @@
 > **Source**: `design/gdd/gdd-visual-audio.md`, `design/gdd/gdd-combat-survival.md`, `design/art/art-bible.md`  
 > **Reference notebook**: [2d Game Development and AI Coding](https://notebooklm.google.com/notebook/6e9b7ae3-8203-443b-925d-c0040062e981) — 탑다운 가독성, 윤곽선, 프레임 최소화, 원형 콜라이더  
 > **Generated**: 2026-05-15  
-> **Status**: 6 specced · 6 placeholder PNG in `src/assets/art/`
+> **Status**: 5/6 PixelLab in `src/assets/art/sprites/` · floor tile pending (`tiles_pro` job)
 
 ## NotebookLM synthesis (applied)
 

@@ -6,7 +6,7 @@
 
 | Total | Needed | In Progress | Done | Approved |
 |-------|--------|-------------|------|----------|
-| 6 sprites | 0 | 0 | 6 placeholder | 0 |
+| 6 sprites | 1 | 1 | 4 PixelLab | 0 |
 
 ## Spec files
 
@@ -18,9 +18,9 @@
 
 | ID | Name | Category | Spec | File (target) | Status |
 |----|------|----------|------|---------------|--------|
-| ASSET-001 | Player Developer | Sprite | combat-visual | `src/assets/art/sprites/chr_player_dev.png` | Placeholder (Godot) |
-| ASSET-002 | Enemy HR | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_hr.png` | Placeholder (Godot) |
-| ASSET-003 | Enemy CEO | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_ceo.png` | Placeholder (Godot) |
-| ASSET-004 | Enemy CTO | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_cto.png` | Placeholder (Godot) |
-| ASSET-005 | Commit Projectile | Sprite | combat-visual | `src/assets/art/sprites/prj_commit_default.png` | Placeholder (Godot) |
-| ASSET-006 | Office Floor | Environment | combat-visual | `src/assets/art/tiles/env_floor_office.png` | Placeholder (Godot) |
+| ASSET-001 | Player Developer | Sprite | combat-visual | `src/assets/art/sprites/chr_player_dev.png` | Done (PixelLab south) |
+| ASSET-002 | Enemy HR | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_hr.png` | Done (PixelLab south) |
+| ASSET-003 | Enemy CEO | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_ceo.png` | Done (PixelLab south) |
+| ASSET-004 | Enemy CTO | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_cto.png` | Done (PixelLab south, v2) |
+| ASSET-005 | Commit Projectile | Sprite | combat-visual | `src/assets/art/sprites/prj_commit_default.png` | Done (PixelLab map object) |
+| ASSET-006 | Office Floor | Environment | combat-visual | `src/assets/art/tiles/env_floor_office.png` | In progress (tiles_pro `029b3ff8…`) — script placeholder until ready |

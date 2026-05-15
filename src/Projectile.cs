@@ -15,8 +15,7 @@ public partial class Projectile : Node2D
     public override void _Ready()
     {
         _life = Lifetime;
-        var center = new Vector2(8f, 8f);
-        var sprite = ArtPaths.TrySprite(ArtPaths.Projectile, center);
+        var sprite = ArtPaths.TrySprite(ArtPaths.Projectile, ArtPaths.ProjectileCenterOffset);
         if (sprite != null)
         {
             AddChild(sprite);
