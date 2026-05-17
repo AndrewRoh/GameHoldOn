@@ -2,23 +2,31 @@ using Godot;
 
 namespace GameHoldOn;
 
-/// <summary>뱀서류 MVP — 8주 생존, HR/CEO/CTO 스폰, 승패 처리.</summary>
+/// <summary>뱀서류 MVP — 8주 생존, HR/CEO/CTO 스폰, XP·레벨, 승패.</summary>
 public partial class Main : Node2D
 {
-    private const float WeekDurationSec = 45f;
-    private const float SpawnRadius = 520f;
-
     private Camera2D? _camera;
     private Player? _player;
-    private Label? _hud;
+    private GameHud? _hud;
     private float _weekTimer;
-    private float _spawnTimer;
+    private float _waveTimer;
+    private int _waveBurstLeft;
+    private float _waveBurstCd;
+    private float _trickleTimer;
     private bool _gameEnded;
 
     public int Week { get; private set; } = 1;
+    public int Wave { get; private set; }
+    public int AliveEnemies => GetTree().GetNodesInGroup("enemies").Count;
+    public float WeekTimer => _weekTimer;
+    public int Level { get; private set; } = 1;
+    public int Xp { get; private set; }
+    public int XpToNext => GameBalance.XpToNextLevel(Level);
+    public float DamageBonus { get; private set; }
 
     public override void _Ready()
     {
+        AddToGroup("game_root");
         _camera = GetNodeOrNull<Camera2D>("Camera2D");
         BuildFloor();
 
@@ -28,13 +36,13 @@ public partial class Main : Node2D
 
         var ui = new CanvasLayer();
         AddChild(ui);
-        _hud = new Label();
-        _hud.Position = new Vector2(16, 12);
-        _hud.AddThemeFontSizeOverride("font_size", 18);
+        _hud = new GameHud();
         ui.AddChild(_hud);
 
-        _spawnTimer = 0.35f;
-        UpdateHud();
+        _waveTimer = 4f;
+        _trickleTimer = 0.4f;
+        StartWave();
+        RefreshHud();
     }
 
     public override void _Process(double delta)
@@ -47,69 +55,151 @@ public partial class Main : Node2D
 
         if (_player.Hp <= 0f)
         {
-            GameOver();
+            EndGame(false);
             return;
         }
 
         _weekTimer += d;
-        if (_weekTimer >= WeekDurationSec)
+        if (_weekTimer >= GameBalance.WeekDurationSec)
         {
             _weekTimer = 0f;
-            if (Week >= 8)
+            if (Week >= GameBalance.TotalWeeks)
             {
-                Win();
+                EndGame(true);
                 return;
             }
 
             Week++;
         }
 
-        _spawnTimer -= d;
-        if (_spawnTimer <= 0f)
-        {
-            SpawnEnemy();
-            _spawnTimer = SpawnInterval();
-        }
+        UpdateSpawning(d);
 
         if (_camera != null)
         {
             _camera.GlobalPosition = _player.GlobalPosition;
         }
 
-        UpdateHud();
+        RefreshHud();
     }
 
-    private float SpawnInterval()
+    public override void _UnhandledInput(InputEvent @event)
     {
-        return Mathf.Max(0.55f, 2.4f - (Week - 1) * 0.22f);
+        if (!_gameEnded)
+        {
+            return;
+        }
+
+        if (@event is not InputEventKey { Pressed: true, Echo: false } key)
+        {
+            return;
+        }
+
+        if (key.Keycode is Key.R or Key.Enter or Key.Space)
+        {
+            GetTree().ReloadCurrentScene();
+            GetViewport().SetInputAsHandled();
+        }
+    }
+
+    public void OnEnemyKilled(BossKind kind)
+    {
+        if (_gameEnded)
+        {
+            return;
+        }
+
+        Xp += GameBalance.XpForKill(kind);
+        while (Xp >= XpToNext)
+        {
+            Xp -= XpToNext;
+            LevelUp();
+        }
+    }
+
+    public float ProjectileDamage()
+    {
+        return GameBalance.ProjectileBaseDamage
+               + Week * GameBalance.ProjectileDamagePerWeek
+               + DamageBonus;
+    }
+
+    private void LevelUp()
+    {
+        Level++;
+        DamageBonus += GameBalance.LevelDamageBonus;
+        if (_player != null)
+        {
+            _player.RaiseMaxHp(GameBalance.LevelMaxHpBonus);
+        }
+    }
+
+    private void UpdateSpawning(float delta)
+    {
+        if (_waveBurstLeft > 0)
+        {
+            _waveBurstCd -= delta;
+            if (_waveBurstCd <= 0f)
+            {
+                if (AliveEnemies < GameBalance.MaxEnemiesAlive)
+                {
+                    SpawnEnemy();
+                    _waveBurstLeft--;
+                }
+
+                _waveBurstCd = GameBalance.WaveSpawnStagger;
+            }
+        }
+
+        _waveTimer -= delta;
+        if (_waveTimer <= 0f)
+        {
+            StartWave();
+            _waveTimer = GameBalance.WaveInterval(Week);
+        }
+
+        _trickleTimer -= delta;
+        if (_trickleTimer <= 0f)
+        {
+            if (AliveEnemies < GameBalance.MaxEnemiesAlive)
+            {
+                SpawnEnemy();
+            }
+
+            _trickleTimer = GameBalance.TrickleSpawnInterval(Week);
+        }
+    }
+
+    private void StartWave()
+    {
+        Wave++;
+        _waveBurstLeft = GameBalance.WaveEnemyCount(Week);
+        _waveBurstCd = 0f;
     }
 
     private void SpawnEnemy()
     {
-        if (_player == null)
+        if (_player == null || AliveEnemies >= GameBalance.MaxEnemiesAlive)
         {
             return;
         }
 
         var kind = RollBossKind();
-        var hpScale = 1f + (Week - 1) * 0.12f;
-        var speedScale = 1f + (Week - 1) * 0.08f;
-
         var enemy = new Enemy();
-        enemy.GlobalPosition = RandomRingPoint(_player.GlobalPosition, SpawnRadius);
-        enemy.Setup(kind, hpScale, speedScale);
+        enemy.GlobalPosition = RandomRingPoint(_player.GlobalPosition, GameBalance.SpawnRadius);
+        enemy.Setup(kind, GameBalance.HpScale(Week), GameBalance.SpeedScale(Week));
+        enemy.Killed += OnEnemyKilled;
         AddChild(enemy);
     }
 
     private static BossKind RollBossKind()
     {
         var r = GD.Randf();
-        if (r < 0.45f)
+        if (r < GameBalance.HrSpawnWeight)
         {
             return BossKind.Hr;
         }
 
-        if (r < 0.70f)
+        if (r < GameBalance.HrSpawnWeight + GameBalance.CeoSpawnWeight)
         {
             return BossKind.Ceo;
         }
@@ -123,27 +213,17 @@ public partial class Main : Node2D
         return center + new Vector2(Mathf.Cos(ang), Mathf.Sin(ang)) * radius;
     }
 
-    private void UpdateHud()
+    private void RefreshHud()
     {
-        if (_hud == null || _player == null)
+        if (_hud == null || _player == null || _gameEnded)
         {
             return;
         }
 
-        if (_gameEnded)
-        {
-            return;
-        }
-
-        var timeLeft = Mathf.Max(0f, WeekDurationSec - _weekTimer);
-        var phase = Week >= 8 ? "클리어까지" : "다음 주까지";
-        _hud.Text =
-            $"주차: {Week}/8  ({phase} {timeLeft:0}s)\n" +
-            $"HP: {_player.Hp:0}/{_player.MaxHp:0}\n" +
-            "이동: WASD";
+        _hud.Update(this, _player);
     }
 
-    private void Win()
+    private void EndGame(bool won)
     {
         if (_gameEnded)
         {
@@ -152,25 +232,15 @@ public partial class Main : Node2D
 
         _gameEnded = true;
         ClearEnemies();
-        if (_hud != null)
-        {
-            _hud.Text = "승리 — 8주를 버텼습니다.\n분기 생존 (R 키로 재시작은 아직 없음)";
-        }
-    }
 
-    private void GameOver()
-    {
-        if (_gameEnded)
+        if (_hud == null)
         {
             return;
         }
 
-        _gameEnded = true;
-        ClearEnemies();
-        if (_hud != null)
-        {
-            _hud.Text = "패배 — 구조조정 라인에 걸렸습니다.\n(에디터에서 F5 재실행)";
-        }
+        _hud.ShowEndScreen(won
+            ? $"승리 — {GameBalance.TotalWeeks}주를 버텼습니다.\n레벨 {Level} · R/Enter/Space 재시작"
+            : $"패배 — 구조조정 라인에 걸렸습니다.\n레벨 {Level} · R/Enter/Space 재시작");
     }
 
     private void ClearEnemies()
@@ -186,22 +256,24 @@ public partial class Main : Node2D
 
     private void BuildFloor()
     {
-        var tex = ArtPaths.Load(ArtPaths.FloorTile);
-        if (tex == null)
+        var texA = ArtPaths.Load(ArtPaths.FloorTile);
+        var texB = ArtPaths.Load(ArtPaths.FloorTileAlt);
+        if (texA == null)
         {
             return;
         }
 
         var floor = new Node2D { Name = "Floor", ZIndex = -10 };
         const int extent = 2048;
-        const int tile = 128;
+        const int tile = 64;
         for (var y = -extent; y < extent; y += tile)
         {
             for (var x = -extent; x < extent; x += tile)
             {
+                var useAlt = texB != null && ((x / tile + y / tile) % 2 == 0);
                 var tileSprite = new Sprite2D
                 {
-                    Texture = tex,
+                    Texture = useAlt ? texB : texA,
                     Position = new Vector2(x, y),
                     Centered = false,
                     TextureFilter = CanvasItem.TextureFilterEnum.Linear

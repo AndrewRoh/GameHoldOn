@@ -22,4 +22,11 @@ foreach ($d in $downloads) {
     curl.exe --ssl-no-revoke -L -f -o $path $d.Url
 }
 
+$tiles = Join-Path $root "src\assets\art\tiles"
+$tileBase = "https://backblaze.pixellab.ai/file/pixellab-tiles/aded2ff3-b5fa-42a7-a720-2c4450839f9f/029b3ff8-158d-4901-841c-dce8ca0d143f"
+Write-Host "Downloading env_floor_office.png..."
+curl.exe --ssl-no-revoke -L -f -o (Join-Path $tiles "env_floor_office.png") "$tileBase/tile_0.png"
+Write-Host "Downloading env_floor_office_alt.png..."
+curl.exe --ssl-no-revoke -L -f -o (Join-Path $tiles "env_floor_office_alt.png") "$tileBase/tile_1.png"
+
 Write-Host "Done. Open Godot src/ and let imports refresh."

@@ -5,17 +5,12 @@ namespace GameHoldOn;
 /// <summary>WASD 이동, 주변 적에게 자동 투사체.</summary>
 public partial class Player : CharacterBody2D
 {
-    private const float MoveSpeed = 220f;
-    private const float ContactDamagePerSec = 18f;
-    private const float ContactRadius = 34f;
-    private const float FireCooldown = 0.28f;
-
     private float _fireCd;
     private float _contactTick;
     private Node2D? _gfx;
 
-    public float Hp { get; private set; } = 100f;
-    public float MaxHp { get; } = 100f;
+    public float Hp { get; private set; } = GameBalance.PlayerMaxHpBase;
+    public float MaxHp { get; private set; } = GameBalance.PlayerMaxHpBase;
 
     public override void _Ready()
     {
@@ -27,6 +22,12 @@ public partial class Player : CharacterBody2D
         var sprite = ArtPaths.TrySprite(ArtPaths.Player, ArtPaths.CharacterFeetOffset);
         _gfx = sprite != null ? sprite : CreateFallbackBody(Colors.PaleGreen);
         AddChild(_gfx);
+    }
+
+    public void RaiseMaxHp(float amount)
+    {
+        MaxHp += amount;
+        Hp = Mathf.Min(MaxHp, Hp + amount);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -58,7 +59,7 @@ public partial class Player : CharacterBody2D
             dir = dir.Normalized();
         }
 
-        Velocity = dir * MoveSpeed;
+        Velocity = dir * GameBalance.PlayerMoveSpeed;
         MoveAndSlide();
 
         ApplyContactDamage(d);
@@ -80,7 +81,7 @@ public partial class Player : CharacterBody2D
                 continue;
             }
 
-            if (GlobalPosition.DistanceTo(mob.GlobalPosition) > ContactRadius)
+            if (GlobalPosition.DistanceTo(mob.GlobalPosition) > GameBalance.PlayerContactRadius)
             {
                 continue;
             }
@@ -102,7 +103,7 @@ public partial class Player : CharacterBody2D
         }
 
         _contactTick = 0f;
-        ApplyDamage(ContactDamagePerSec * delta);
+        ApplyDamage(GameBalance.PlayerContactDamagePerSec * delta);
     }
 
     private void TryFire(float delta)
@@ -119,20 +120,20 @@ public partial class Player : CharacterBody2D
             return;
         }
 
-        _fireCd = FireCooldown;
+        _fireCd = GameBalance.PlayerFireCooldown;
         var dir = (target.GlobalPosition - GlobalPosition).Normalized();
         if (dir == Vector2.Zero)
         {
             dir = Vector2.Right;
         }
 
+        var main = GetParent() as Main;
         var proj = new Projectile
         {
-            Velocity = dir * 640f,
-            Damage = 11f + ((GetParent() as Main)?.Week ?? 1) * 0.4f
+            Velocity = dir * GameBalance.ProjectileSpeed,
+            Damage = main?.ProjectileDamage() ?? GameBalance.ProjectileBaseDamage
         };
-        var parent = GetParent();
-        parent?.AddChild(proj);
+        GetParent()?.AddChild(proj);
         proj.GlobalPosition = GlobalPosition + dir * 24f;
     }
 

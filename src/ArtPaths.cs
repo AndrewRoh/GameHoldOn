@@ -11,6 +11,7 @@ public static class ArtPaths
     public const string EnemyCto = "res://assets/art/sprites/chr_enemy_cto.png";
     public const string Projectile = "res://assets/art/sprites/prj_commit_default.png";
     public const string FloorTile = "res://assets/art/tiles/env_floor_office.png";
+    public const string FloorTileAlt = "res://assets/art/tiles/env_floor_office_alt.png";
 
     public static Texture2D? Load(string path)
     {

@@ -7,8 +7,9 @@
 | 1 | Foundation | Core loop & narrative frame | `gdd-office-layoff-survivor.md` | MVP drafted |
 | 2 | Core | Combat & survival (auto-attack, spawn, week) | `gdd-combat-survival.md` | Drafted |
 | 3 | Presentation | Visual & audio (2D cast, VFX, HUD) | `gdd-visual-audio.md` | Drafted |
-| 4 | Presentation | UI flow (prologue, title, results) | *(in core GDD §9 + visual GDD)* | Partial (prologue in code) |
-| 5 | Polish | Meta progression, weapons | — | Not started |
+| 4 | Presentation | UI flow (prologue, title, results) | *(in core GDD §9 + visual GDD)* | Partial (prologue + end screen restart) |
+| 5 | Polish | Meta progression (XP/level) | `GameBalance.cs` | MVP in code |
+| 6 | Polish | Weapons variety | — | Not started |
 
 ## Dependencies
 

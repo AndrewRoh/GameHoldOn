@@ -6,7 +6,7 @@
 
 | Total | Needed | In Progress | Done | Approved |
 |-------|--------|-------------|------|----------|
-| 6 sprites | 1 | 1 | 4 PixelLab | 0 |
+| 6 sprites | 0 | 0 | 6 PixelLab | 0 |
 
 ## Spec files
 
@@ -23,4 +23,4 @@
 | ASSET-003 | Enemy CEO | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_ceo.png` | Done (PixelLab south) |
 | ASSET-004 | Enemy CTO | Sprite | combat-visual | `src/assets/art/sprites/chr_enemy_cto.png` | Done (PixelLab south, v2) |
 | ASSET-005 | Commit Projectile | Sprite | combat-visual | `src/assets/art/sprites/prj_commit_default.png` | Done (PixelLab map object) |
-| ASSET-006 | Office Floor | Environment | combat-visual | `src/assets/art/tiles/env_floor_office.png` | In progress (tiles_pro `029b3ff8…`) — script placeholder until ready |
+| ASSET-006 | Office Floor | Environment | combat-visual | `src/assets/art/tiles/env_floor_office.png` + `_alt.png` checker | Done (PixelLab tiles_pro) |

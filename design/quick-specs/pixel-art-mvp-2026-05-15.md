@@ -41,7 +41,7 @@
 ## Acceptance Criteria
 
 - [x] 5/6 PNG PixelLab → `src/assets/art/` (캐릭터 4 + 탄환 1)
-- [ ] 바닥 타일 `029b3ff8-158d-4901-841c-dce8ca0d143f` 완료 후 교체
+- [x] 바닥 타일 PixelLab `tile_0` / `tile_1` 체커보드
 - [x] F5 시 플레이어·3적·탄 PixelLab 아트 (바닥은 플레이스홀더 가능)
 - [x] `asset-manifest.md` 갱신
 - [x] `dotnet build` 성공
