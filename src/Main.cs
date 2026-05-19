@@ -2,12 +2,13 @@ using Godot;
 
 namespace GameHoldOn;
 
-/// <summary>뱀서류 MVP — 8주 생존, HR/CEO/CTO 스폰, XP·레벨, 승패.</summary>
+/// <summary>뱀서류 MVP — 8주 생존, HR/CEO/CTO 스폰, XP·레벨·카드 선택, 승패.</summary>
 public partial class Main : Node2D
 {
     private Camera2D? _camera;
     private Player? _player;
     private GameHud? _hud;
+    private UpgradeManager? _upgradeManager;
     private float _weekTimer;
     private float _waveTimer;
     private int _waveBurstLeft;
@@ -22,7 +23,8 @@ public partial class Main : Node2D
     public int Level { get; private set; } = 1;
     public int Xp { get; private set; }
     public int XpToNext => GameBalance.XpToNextLevel(Level);
-    public float DamageBonus { get; private set; }
+    public bool IsMaxLevel => Level >= GameBalance.MaxLevel;
+    public bool IsUpgradeSelectionOpen => _upgradeManager?.IsOpen ?? false;
 
     public override void _Ready()
     {
@@ -39,6 +41,10 @@ public partial class Main : Node2D
         _hud = new GameHud();
         ui.AddChild(_hud);
 
+        _upgradeManager = new UpgradeManager();
+        ui.AddChild(_upgradeManager);
+        _upgradeManager.Bind(this, _player);
+
         _waveTimer = 4f;
         _trickleTimer = 0.4f;
         StartWave();
@@ -48,8 +54,13 @@ public partial class Main : Node2D
     public override void _Process(double delta)
     {
         var d = (float)delta;
-        if (_gameEnded || _player == null)
+        if (_gameEnded || _player == null || IsUpgradeSelectionOpen)
         {
+            if (!IsUpgradeSelectionOpen && _camera != null && _player != null)
+            {
+                _camera.GlobalPosition = _player.GlobalPosition;
+            }
+
             return;
         }
 
@@ -70,6 +81,7 @@ public partial class Main : Node2D
             }
 
             Week++;
+            _hud?.ShowBanner($"—— {Week}주차 시작 ——", 1.6f);
         }
 
         UpdateSpawning(d);
@@ -103,34 +115,43 @@ public partial class Main : Node2D
 
     public void OnEnemyKilled(BossKind kind)
     {
-        if (_gameEnded)
+        if (_gameEnded || _player == null)
         {
             return;
         }
 
-        Xp += GameBalance.XpForKill(kind);
-        while (Xp >= XpToNext)
-        {
-            Xp -= XpToNext;
-            LevelUp();
-        }
-    }
+        var xp = (int)(GameBalance.XpForKill(kind) * _player.XpGainMultiplier);
+        Xp += Math.Max(1, xp);
 
-    public float ProjectileDamage()
-    {
-        return GameBalance.ProjectileBaseDamage
-               + Week * GameBalance.ProjectileDamagePerWeek
-               + DamageBonus;
+        if (IsMaxLevel || Xp < XpToNext)
+        {
+            return;
+        }
+
+        if (_player.Hp <= 0f)
+        {
+            return;
+        }
+
+        Xp -= XpToNext;
+        LevelUp();
     }
 
     private void LevelUp()
     {
-        Level++;
-        DamageBonus += GameBalance.LevelDamageBonus;
-        if (_player != null)
+        if (IsMaxLevel)
         {
-            _player.RaiseMaxHp(GameBalance.LevelMaxHpBonus);
+            return;
         }
+
+        Level++;
+        _hud?.ShowBanner($"레벨 업! Lv {Level}", 0.2f);
+        _upgradeManager?.OpenSelection(Level);
+    }
+
+    public void OnUpgradeSelectionFinished()
+    {
+        RefreshHud();
     }
 
     private void UpdateSpawning(float delta)
@@ -174,6 +195,10 @@ public partial class Main : Node2D
         Wave++;
         _waveBurstLeft = GameBalance.WaveEnemyCount(Week);
         _waveBurstCd = 0f;
+        if (!IsUpgradeSelectionOpen)
+        {
+            _hud?.ShowBanner($"⚠ 웨이브 {Wave}  (적 {_waveBurstLeft}마리)", 1.5f);
+        }
     }
 
     private void SpawnEnemy()
@@ -231,6 +256,11 @@ public partial class Main : Node2D
         }
 
         _gameEnded = true;
+        if (_upgradeManager?.IsOpen == true)
+        {
+            Engine.TimeScale = 1f;
+        }
+
         ClearEnemies();
 
         if (_hud == null)

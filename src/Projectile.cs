@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace GameHoldOn;
@@ -9,8 +10,10 @@ public partial class Projectile : Node2D
     private const float Lifetime = 2.2f;
 
     private float _life;
+    private readonly HashSet<ulong> _hitIds = [];
     public float Damage { get; set; } = 12f;
     public Vector2 Velocity { get; set; }
+    public int PierceCount { get; set; }
 
     public override void _Ready()
     {
@@ -45,9 +48,22 @@ public partial class Projectile : Node2D
             return;
         }
 
+        var maxHits = 1 + PierceCount;
+        if (_hitIds.Count >= maxHits)
+        {
+            QueueFree();
+            return;
+        }
+
         foreach (var node in GetTree().GetNodesInGroup("enemies"))
         {
             if (node is not Enemy enemy)
+            {
+                continue;
+            }
+
+            var id = enemy.GetInstanceId();
+            if (_hitIds.Contains(id))
             {
                 continue;
             }
@@ -58,7 +74,12 @@ public partial class Projectile : Node2D
             }
 
             enemy.TakeDamage(Damage);
-            QueueFree();
+            _hitIds.Add(id);
+            if (_hitIds.Count >= maxHits)
+            {
+                QueueFree();
+            }
+
             return;
         }
     }

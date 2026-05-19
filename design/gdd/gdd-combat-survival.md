@@ -31,15 +31,19 @@
 
 - 적 0명: 발사 쿨만 소모, 탄 미발사.
 - 동시 다수 적: 가장 가까운 대상 1명만 조준.
+- **카이팅 (의도적 설계)**: 플레이어(220 px/s)는 모든 적(최대 68 px/s)보다 빠름. '회사보다 빠른 개발자' 풍자 컨셉. 카이팅 허용; 압박은 스폰 밀도(후반 ~54마리/구간)로 제공.
 
 ## 6. Dependencies
 
 - `gdd-visual-audio.md` — 스프라이트·히트 VFX.
+- `gdd-meta-progression.md` — 레벨업이 `FireInterval`·`DamageMultiplier`를 변경하여 난이도 카운터 스케일링 제공.
 - Godot groups: `player`, `enemies`.
 
 ## 7. Tuning Knobs
 
-- `BossKind` spawn weights, `WeekDurationSec`, projectile `Damage` scale per week.
+- `BossKind` spawn weights — 단일 출처: `gdd-office-layoff-survivor.md §4` (여기서는 참조만).
+- `WeekDurationSec` — 단일 출처: `gdd-office-layoff-survivor.md §4` (여기서는 참조만).
+- Projectile `Damage` scale per week — 로컬 튜닝 knob (meta-progression 배율과 별개).
 
 ## 8. Acceptance Criteria
 

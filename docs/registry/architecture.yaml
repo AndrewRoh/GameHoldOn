@@ -30,7 +30,7 @@
 #   Superseded entries:     Grep pattern="status: superseded"
 
 version: 1
-last_updated: ""
+last_updated: "2026-05-19"
 
 # ─── STATE OWNERSHIP ─────────────────────────────────────────────────────────
 # Who is the authoritative owner of each piece of shared game state.
@@ -43,7 +43,39 @@ last_updated: ""
 # interface: how other systems access this state (read-only property, method call,
 #   signal, shared resource, etc.) — this is the contract other ADRs depend on.
 
-state_ownership: []
+state_ownership:
+  - state: game_state
+    status: active
+    owner_system: GameStateModule
+    adr: docs/architecture/adr-0001-game-state-machine.md
+    interface: "Main.CurrentState (read-only GameState enum property)"
+    write_access: "SetState() in Main.cs only — no external writes"
+    referenced_by:
+      - docs/architecture/adr-0001-game-state-machine.md
+    added: 2026-05-17
+    revised: ""
+
+  - state: upgrade_card_stacks
+    status: active
+    owner_system: Player
+    adr: docs/architecture/adr-0002-upgrade-selection.md
+    interface: "Player.UpgradeStacks (read-only), Player.ApplyUpgrade(id) (write via UpgradeManager only)"
+    write_access: "UpgradeManager after player selection — Player.ApplyUpgrade"
+    referenced_by:
+      - docs/architecture/adr-0002-upgrade-selection.md
+    added: 2026-05-19
+    revised: ""
+
+  - state: level_up_time_scale
+    status: active
+    owner_system: UpgradeManager
+    adr: docs/architecture/adr-0002-upgrade-selection.md
+    interface: "Engine.TimeScale set to 0 while UpgradeManager.IsOpen"
+    write_access: UpgradeManager-only
+    referenced_by:
+      - docs/architecture/adr-0002-upgrade-selection.md
+    added: 2026-05-19
+    revised: ""
 
 # Example:
 #
@@ -157,7 +189,15 @@ api_decisions: []
 # Register a pattern when an ADR explicitly bans it AND other ADRs might
 # unknowingly use it (i.e., it's a tempting but wrong approach for this project).
 
-forbidden_patterns: []
+forbidden_patterns:
+  - pattern: external_set_state_call
+    status: active
+    description: "GameStateModule(Main.cs) 외부 코드는 SetState()를 직접 호출하지 않는다.
+      상태 변경이 필요한 조건(HP=0, Week 8 완료 등)은 GameEvents 이벤트로 통보하고,
+      Main.cs가 이를 구독해 SetState()를 호출한다."
+    why: "SetState() 직접 호출이 분산되면 유효하지 않은 전환을 방지하는 FSM 보증이 깨짐."
+    adr: docs/architecture/adr-0001-game-state-machine.md
+    added: 2026-05-17
 
 # Example:
 #
