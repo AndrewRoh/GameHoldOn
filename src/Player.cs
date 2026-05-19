@@ -14,7 +14,7 @@ public partial class Player : CharacterBody2D
 
     private float _fireCd;
     private float _contactTick;
-    private Node2D? _gfx;
+    private CharacterVisual? _gfx;
     private PlayerCombatStats _stats = PlayerCombatStats.FromStacks(new Dictionary<UpgradeCardId, int>());
 
     public float Hp { get; private set; } = GameBalance.PlayerMaxHpBase;
@@ -32,9 +32,15 @@ public partial class Player : CharacterBody2D
         shape.Shape = new CircleShape2D { Radius = 14f };
         AddChild(shape);
 
-        var sprite = ArtPaths.TrySprite(ArtPaths.Player, ArtPaths.CharacterFeetOffset);
-        _gfx = sprite != null ? sprite : CreateFallbackBody(Colors.PaleGreen);
-        AddChild(_gfx);
+        _gfx = ArtPaths.TryCharacter(ArtPaths.PlayerSlug, ArtPaths.Player);
+        if (_gfx != null)
+        {
+            AddChild(_gfx);
+        }
+        else
+        {
+            AddChild(CreateFallbackBody(Colors.PaleGreen));
+        }
         RebuildCombatStats();
     }
 
@@ -136,6 +142,10 @@ public partial class Player : CharacterBody2D
 
         Velocity = dir * _stats.MoveSpeed;
         MoveAndSlide();
+        if (dir != Vector2.Zero)
+        {
+            _gfx?.SetFacing(dir);
+        }
 
         if (_stats.HpRegenPerSec > 0f)
         {

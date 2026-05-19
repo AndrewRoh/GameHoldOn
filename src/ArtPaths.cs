@@ -6,6 +6,7 @@ namespace GameHoldOn;
 public static class ArtPaths
 {
     public const string Player = "res://assets/art/sprites/chr_player_dev.png";
+    public const string PlayerSlug = "chr_player_dev";
     public const string EnemyHr = "res://assets/art/sprites/chr_enemy_hr.png";
     public const string EnemyCeo = "res://assets/art/sprites/chr_enemy_ceo.png";
     public const string EnemyCto = "res://assets/art/sprites/chr_enemy_cto.png";
@@ -22,6 +23,21 @@ public static class ArtPaths
         }
 
         return GD.Load<Texture2D>(path);
+    }
+
+    public static string EnemySlug(BossKind kind) => kind switch
+    {
+        BossKind.Hr => "chr_enemy_hr",
+        BossKind.Ceo => "chr_enemy_ceo",
+        BossKind.Cto => "chr_enemy_cto",
+        _ => "chr_enemy_hr"
+    };
+
+    public static CharacterVisual? TryCharacter(string characterSlug, string staticTexturePath)
+    {
+        var feet = CharacterFeetOffset;
+        return CharacterVisual.TryCreate(characterSlug, feet)
+               ?? CharacterVisual.TryCreateStatic(staticTexturePath, feet);
     }
 
     public static Sprite2D? TrySprite(string path, Vector2 feetOffset)

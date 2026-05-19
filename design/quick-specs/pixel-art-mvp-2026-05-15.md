@@ -30,7 +30,7 @@
 | ASSET-005 | `prj_commit_default.png` | `create_map_object` 16×16 | Projectile |
 | ASSET-006 | `env_floor_office.png` | `create_tiles_pro` square top-down | Main floor grid |
 
-- MVP는 **남향(south) 프레임 1장**만 `Sprite2D`에 사용. 4방향 전체는 후속 `AnimatedSprite2D`.
+- MVP 정지 프레임: `Sprite2D` 폴백. **walk 4프레임 × 4방향**은 PixelLab `walking-4-frames` → `src/assets/art/animations/{slug}/walk/{dir}/` → `AnimatedSprite2D`.
 - 생성 실패 시 기존 `tools/generate_placeholder_sprites.py` 폴백 유지.
 
 ## New Rules / Values
@@ -57,8 +57,17 @@
 | Projectile | `58aecabf-8b45-411e-a2a1-3ab79635b5a8` |
 | Floor tiles | `029b3ff8-158d-4901-841c-dce8ca0d143f` (processing) |
 
-## Out of scope
+## Walk animations (2026-05-19)
 
-- Walk 애니메이션 (`animate_character`)
+| Slug | Character ID | Template |
+|------|----------------|----------|
+| chr_player_dev | 5f750a95-08dc-4d18-bf64-90557f6a14b2 | walking-4-frames |
+| chr_enemy_hr | cd3fa112-b0bd-4a45-a703-e27f7f3226fe | walking-4-frames |
+| chr_enemy_ceo | 0d6bf6ab-f4d6-4192-b81c-95052f0e2e1a | walking-4-frames |
+| chr_enemy_cto | 103eb4fb-4415-4c70-85f4-066fd9313d62 | walking-4-frames |
+
+재다운로드: `tools/download_all_walk_animations.ps1`
+
+## Out of scope
 - UI/HUD 픽셀 아이콘
 - BGM/SFX

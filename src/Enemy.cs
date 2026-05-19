@@ -9,6 +9,7 @@ public partial class Enemy : Node2D
     public event Action<BossKind>? Killed;
 
     private float _hp;
+    private CharacterVisual? _gfx;
 
     public BossKind Kind { get; private set; }
     public float Speed { get; private set; }
@@ -27,10 +28,11 @@ public partial class Enemy : Node2D
         _hp = baseHp * hpScale;
         Speed = baseSpeed * speedScale;
 
-        var gfx = ArtPaths.TrySprite(ArtPaths.EnemyTexture(kind), ArtPaths.CharacterFeetOffset);
-        if (gfx != null)
+        var slug = ArtPaths.EnemySlug(kind);
+        _gfx = ArtPaths.TryCharacter(slug, ArtPaths.EnemyTexture(kind));
+        if (_gfx != null)
         {
-            AddChild(gfx);
+            AddChild(_gfx);
         }
         else
         {
@@ -82,5 +84,6 @@ public partial class Enemy : Node2D
         }
 
         GlobalPosition += dir * Speed * (float)delta;
+        _gfx?.SetFacing(dir);
     }
 }
